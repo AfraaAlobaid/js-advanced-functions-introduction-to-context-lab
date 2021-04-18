@@ -24,12 +24,18 @@ function createTimeInEvent(record, time) {
 }
 
 function createTimeOutEvent(record, time) {
-  record.timeOutEvents.push({
-    type: "TimeOut",
-    date: time.split(" ")[0],
-    hour: parseInt(time.split(" ")[1]),
-  });
-  return record;
+  try {
+    if (record.timeInEvents.find((e) => e.date === time.split(" ")[0])) {
+      record.timeOutEvents.push({
+        type: "TimeOut",
+        date: time.split(" ")[0],
+        hour: parseInt(time.split(" ")[1]),
+      });
+      return record;
+    } else throw "No time in for this date";
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 function hoursWorkedOnDate(record, date) {
@@ -54,6 +60,15 @@ function calculatePayroll(records) {
     .reduce((total, curr) => total + curr);
 }
 
-function findEmployeeByFirstName(records, firstName){
-    return records.find((r) => r.firstName === firstName);
+function findEmployeeByFirstName(records, firstName) {
+  return records.find((r) => r.firstName === firstName);
 }
+
+const record = createEmployeeRecord([
+  "Afraa",
+  "Alobaid",
+  "Software Engineer",
+  40,
+]);
+createTimeInEvent(record, "12 5654");
+console.log(createTimeOutEvent(record, "12 544"));
